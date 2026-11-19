@@ -1,5 +1,6 @@
 package org.olcbox.app.ui.components
 
+import org.olcbox.app.ui.theme.imbaPanel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -66,8 +67,8 @@ fun SettingsCaption(text: String, modifier: Modifier = Modifier) {
 @Composable
 fun SettingsCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
     Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(28.dp),
+        modifier = modifier.fillMaxWidth().imbaPanel(RoundedCornerShape(24.dp), 4.dp),
+        shape = RoundedCornerShape(24.dp),
         color = MaterialTheme.colorScheme.surfaceContainer
     ) {
         Column(content = content)

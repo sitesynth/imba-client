@@ -9,6 +9,8 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import org.olcbox.app.ui.theme.ImbaInk
+import org.olcbox.app.ui.theme.imbaHardShadow
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -161,15 +163,8 @@ fun LocationRow(
         },
         label = "locationRowContainer"
     )
-    val borderColor by animateColorAsState(
-        targetValue = if (isSelected) {
-            MaterialTheme.colorScheme.primary
-        } else {
-            Color.Transparent
-        },
-        label = "locationRowBorder"
-    )
-    val borderWidth = if (isSelected) 1.5.dp else 1.dp
+    val borderColor = ImbaInk
+    val borderWidth = 2.dp
     val textColor = MaterialTheme.colorScheme.onSurface
 
     val metadata = location.metadata
@@ -185,6 +180,7 @@ fun LocationRow(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = 76.dp)
+            .imbaHardShadow(RoundedCornerShape(24.dp), 3.dp)
             .clip(RoundedCornerShape(24.dp))
             .background(bgColor)
             .border(borderWidth, borderColor, RoundedCornerShape(24.dp))
@@ -494,15 +490,8 @@ fun LocationGridCell(
         },
         label = "gridCellContainer"
     )
-    val borderColor by animateColorAsState(
-        targetValue = if (isSelected) {
-            MaterialTheme.colorScheme.primary
-        } else {
-            Color.Transparent
-        },
-        label = "gridCellBorder"
-    )
-    val borderWidth = if (isSelected) 1.5.dp else 1.dp
+    val borderColor = ImbaInk
+    val borderWidth = 2.dp
     val textColor = MaterialTheme.colorScheme.onSurface
 
     val metadata = location.metadata
@@ -516,6 +505,7 @@ fun LocationGridCell(
     Column(
         modifier = modifier
             .heightIn(min = 96.dp)
+            .imbaHardShadow(RoundedCornerShape(24.dp), 3.dp)
             .clip(RoundedCornerShape(24.dp))
             .background(bgColor)
             .border(borderWidth, borderColor, RoundedCornerShape(24.dp))

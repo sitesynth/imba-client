@@ -207,7 +207,7 @@ class AndroidVpnManager(private val context: Context) : VpnManager {
                 LocalizationState.language = lang
                 ThemeState.background = preferences[KEY_ANDROID_BG_COLOR]?.let { Color(it.toInt()) }
                 ThemeState.dynamicEnabled = preferences[KEY_ANDROID_DYNAMIC_THEME] == true
-                ThemeState.lightMode = preferences[KEY_ANDROID_LIGHT_THEME] == true
+                ThemeState.lightMode = preferences[KEY_ANDROID_LIGHT_THEME] != false
             }
         }
     }

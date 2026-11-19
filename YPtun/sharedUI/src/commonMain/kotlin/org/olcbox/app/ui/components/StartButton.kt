@@ -2,6 +2,7 @@ package org.olcbox.app.ui.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +28,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.olcbox.app.ui.theme.ImbaGreen
+import org.olcbox.app.ui.theme.ImbaInk
+import org.olcbox.app.ui.theme.ImbaPaper
+import org.olcbox.app.ui.theme.ImbaYellow
+import org.olcbox.app.ui.theme.imbaHardShadow
 
 sealed class StartButtonState {
     object Idle : StartButtonState()
@@ -46,37 +52,27 @@ fun StartButton(
 ) {
     val mainButtonColor by animateColorAsState(
         targetValue = when {
-            isActive -> MaterialTheme.colorScheme.primary
-            else -> MaterialTheme.colorScheme.surfaceContainerHighest
+            isActive -> ImbaGreen
+            isLoading -> ImbaPaper
+            else -> ImbaYellow
         },
         label = "buttonColor"
     )
+    val contentColor = ImbaInk
 
-    val contentColor = when {
-        isActive -> MaterialTheme.colorScheme.onPrimary
-        else -> MaterialTheme.colorScheme.onSurfaceVariant
-    }
-
-    val ringColor by animateColorAsState(
-        targetValue = if (isActive) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer,
-        label = "ringColor"
-    )
-
-    // A round ring with the round action button in its middle; the ring takes a tint of the accent
-    // while connected.
+    // IMBA "pop" button: flat colour disc, 2.5dp ink border and a hard offset shadow.
     Box(
         modifier = modifier
             .size(132.dp)
+            .imbaHardShadow(CircleShape, 5.dp)
             .clip(CircleShape)
-            .background(ringColor)
+            .background(mainButtonColor)
+            .border(2.5.dp, ImbaInk, CircleShape)
             .clickable(enabled = enabled) { onClick() },
         contentAlignment = Alignment.Center
     ) {
         Box(
-            modifier = Modifier
-                .size(88.dp)
-                .clip(CircleShape)
-                .background(mainButtonColor),
+            modifier = Modifier.size(88.dp),
             contentAlignment = Alignment.Center
         ) {
             if (isLoading) {

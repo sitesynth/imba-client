@@ -1,5 +1,6 @@
 package org.olcbox.app.ui.features.home
 
+import org.olcbox.app.ui.theme.imbaPanel
 import org.olcbox.app.ui.features.home.components.VkLinkPromptDialog
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -597,7 +598,7 @@ fun HomeScreen(
             if (selectionMode) {
                 item(key = "selection-bar") {
                     Surface(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().imbaPanel(RoundedCornerShape(24.dp), 3.dp),
                         shape = RoundedCornerShape(24.dp),
                         color = MaterialTheme.colorScheme.surfaceContainerHigh
                     ) {

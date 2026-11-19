@@ -14,10 +14,10 @@ import androidx.compose.ui.unit.dp
  * Buttons keep Material's full rounding.
  */
 internal val AppShapes = Shapes(
-    extraSmall = RoundedCornerShape(24.dp),
-    small = RoundedCornerShape(24.dp),
-    medium = RoundedCornerShape(28.dp),
-    large = RoundedCornerShape(28.dp),
+    extraSmall = RoundedCornerShape(12.dp),
+    small = RoundedCornerShape(16.dp),
+    medium = RoundedCornerShape(20.dp),
+    large = RoundedCornerShape(24.dp),
     extraLarge = RoundedCornerShape(28.dp)
 )
 

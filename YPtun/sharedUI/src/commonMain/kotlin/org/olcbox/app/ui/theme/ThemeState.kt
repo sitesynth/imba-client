@@ -35,7 +35,7 @@ object ThemeState {
      * The background/text swatches below are all dark-canvas colors, so [AppTheme] ignores them while
      * this is on (the accent still applies) and the settings screen hides those two rows.
      */
-    var lightMode by mutableStateOf(false)
+    var lightMode by mutableStateOf(true)
 
     /** Theme (background) swatches; first = default (black). */
     val backgroundPresets: List<Color> = listOf(
