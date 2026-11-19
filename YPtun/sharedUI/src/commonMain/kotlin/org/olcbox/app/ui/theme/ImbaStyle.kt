@@ -19,7 +19,7 @@ fun Modifier.imbaHardShadow(
     val o = offset.toPx()
     val outline = shape.createOutline(size, layoutDirection, this)
     translate(left = o, top = o) {
-        androidx.compose.ui.graphics.drawscope.drawOutline(outline, color = color)
+        drawOutline(outline, color = color)
     }
 }
 
