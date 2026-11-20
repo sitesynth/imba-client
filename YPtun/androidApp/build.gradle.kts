@@ -133,7 +133,7 @@ android {
     // plus one fat "universal" APK for anyone who just wants a single file that runs anywhere.
     splits {
         abi {
-            isEnable = true
+            isEnable = false
             reset()
             include(*androidAbiFilters.toTypedArray())
             isUniversalApk = true
