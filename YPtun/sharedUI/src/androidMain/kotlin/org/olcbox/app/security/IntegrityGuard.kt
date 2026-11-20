@@ -23,12 +23,12 @@ import java.security.MessageDigest
 object IntegrityGuard {
 
     /**
-     * SHA-256 (lowercase hex, no separators) of the official YPtun release signing certificate
-     * (`yptun-release.jks`, alias `yptun`, CN=YPtun). keytool prints it as
+     * SHA-256 (lowercase hex, no separators) of the IMBA release signing certificate
+     * (`imba-release.jks`, alias `imba`, CN=IMBA). keytool prints it as
      * `EA:6B:8C:6B:13:53:D9:C1:…:4E:D0`.
      */
     const val OFFICIAL_SIGNING_SHA256 =
-        "ea6b8c6b1353d9c11086cd7e75259210b26a1b11a6930292270eecccb19f4ed0"
+        "8082d7522d784f05d72e4cf426872458131089e12f96e6597e21bc1d9da75bb1"
 
     /** SHA-256 of the cert the INSTALLED app is signed with (lowercase hex), or null if unreadable. */
     fun installedSigningSha256(context: Context): String? =

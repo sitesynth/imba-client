@@ -1,5 +1,6 @@
 package org.olcbox.app.ui.features.home.components
 
+import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
@@ -54,8 +55,8 @@ fun HomeScreenAppBar(
     CenterAlignedTopAppBar(
         title = {
             Text(
-                text = "YPtun",
-                style = MaterialTheme.typography.titleLarge,
+                text = "IMBA",
+                style = MaterialTheme.typography.titleLarge.copy(fontFamily = org.olcbox.app.ui.theme.imbaWordmarkFamily(), letterSpacing = 1.sp),
                 color = MaterialTheme.colorScheme.onSurface
             )
         },

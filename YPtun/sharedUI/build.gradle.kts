@@ -128,7 +128,7 @@ val buildCoresAndroidAar by tasks.registering(Exec::class) {
     environment("CGO_LDFLAGS_ALLOW", "-l:libcronet\\.a")
     // Build only the ABI we ship when a single one is requested (the CI test build is arm64-only).
     val gomobileTarget = when (providers.gradleProperty("olcbox.android.abiFilters").orNull) {
-        "arm64-v8a" -> "android/arm64"
+        "arm64-v8a" -> "android/arm64,android/amd64"
         else -> "android/arm,android/arm64,android/amd64"
     }
     commandLine(

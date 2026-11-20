@@ -87,7 +87,7 @@ class MainActivity : ComponentActivity() {
     }
 
     /**
-     * One-time warning when the running build is NOT signed with the official YPtun release key —
+     * One-time warning when the running build is NOT signed with the official IMBA release key —
      * i.e. someone repackaged and re-signed the app (ad/spyware injection, "стырили сборку"). This is
      * tamper-evident only: a repacker can patch this out. Shown once per install; acknowledged flag
      * persisted. Official builds short-circuit immediately.
@@ -99,12 +99,12 @@ class MainActivity : ComponentActivity() {
         android.app.AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
             .setTitle("⚠ Неофициальная сборка / Unofficial build")
             .setMessage(
-                "Эта копия YPtun подписана не ключом разработчика — она могла быть изменена " +
+                "Эта копия IMBA подписана не ключом разработчика — она могла быть изменена " +
                     "третьими лицами (реклама, слежка, вредонос). Скачайте оригинал:\n" +
-                    "github.com/yanisplugg/yptun\n\n" +
-                    "This YPtun build is NOT signed by the developer and may have been modified by a " +
+                    "github.com/sitesynth/imba-client\n\n" +
+                    "This IMBA build is NOT signed by the developer and may have been modified by a " +
                     "third party. Get the official app from:\n" +
-                    "github.com/yanisplugg/yptun"
+                    "github.com/sitesynth/imba-client"
             )
             .setCancelable(false)
             .setPositiveButton("OK") { dialog, _ ->

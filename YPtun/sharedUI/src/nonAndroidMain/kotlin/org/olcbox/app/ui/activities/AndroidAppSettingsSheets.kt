@@ -3580,7 +3580,7 @@ private fun AboutContent(
     SettingsPage(title = s.aboutTitle, onBack = onBack) {
         SettingsCard {
             SettingsCardRow(
-                title = "YPtun",
+                title = "IMBA",
                 value = CurrentAppInfo.value.version,
                 icon = Icons.Outlined.Info,
                 showChevron = false
@@ -3599,14 +3599,14 @@ private fun AboutContent(
             SettingsCardRow(
                 title = s.howToConnect,
                 icon = Icons.AutoMirrored.Outlined.HelpOutline,
-                onClick = { SettingsPlatform.openUri("https://t.me/YPtun") }
+                onClick = { SettingsPlatform.openUri("https://t.me/IMBA") }
             )
             SettingsCardDivider()
             SettingsCardRow(
                 title = s.community,
-                value = "t.me/YPtun",
+                value = "t.me/IMBA",
                 icon = Icons.Rounded.Person,
-                onClick = { SettingsPlatform.openUri("https://t.me/YPtun") }
+                onClick = { SettingsPlatform.openUri("https://t.me/IMBA") }
             )
             SettingsCardDivider()
             SettingsCardRow(

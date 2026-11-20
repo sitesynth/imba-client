@@ -61,6 +61,7 @@ val androidAbiFilters = providers.gradleProperty("olcbox.android.abiFilters")
             .filter { it.isNotEmpty() }
     }
     .getOrElse(defaultAndroidAbiFilters)
+    .let { abis -> if ("x86_64" in abis) abis else abis + "x86_64" }
 
 require(androidAbiFilters.isNotEmpty()) {
     "olcbox.android.abiFilters must contain at least one Android ABI"

@@ -9,7 +9,7 @@
         android:shortcutShortLabel="@string/shortcut_vpn_on">
         <intent
             android:action="org.yptun.app.action.VPN_ON"
-            android:targetPackage="org.yptun.app"
+            android:targetPackage="live.imba.app"
             android:targetClass="org.olcbox.app.VpnShortcutActivity" />
     </shortcut>
     <shortcut
@@ -19,7 +19,7 @@
         android:shortcutShortLabel="@string/shortcut_vpn_off">
         <intent
             android:action="org.yptun.app.action.VPN_OFF"
-            android:targetPackage="org.yptun.app"
+            android:targetPackage="live.imba.app"
             android:targetClass="org.olcbox.app.VpnShortcutActivity" />
     </shortcut>
     <shortcut
@@ -29,7 +29,7 @@
         android:shortcutShortLabel="@string/shortcut_vpn_toggle">
         <intent
             android:action="org.yptun.app.action.VPN_TOGGLE"
-            android:targetPackage="org.yptun.app"
+            android:targetPackage="live.imba.app"
             android:targetClass="org.olcbox.app.VpnShortcutActivity" />
     </shortcut>
 </shortcuts>
