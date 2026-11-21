@@ -21,10 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.CompositingStrategy
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.vector.PathParser
@@ -59,7 +56,7 @@ fun ImbaSwirlLogo(modifier: Modifier = Modifier) {
     }
     // Per-tile colours are fixed once per size so the swirl, not the colours, animates.
     val colors = remember { List(80 * 40) { SwirlPalette[random.nextInt(SwirlPalette.size)] } }
-    Canvas(modifier = modifier.graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)) {
+    Canvas(modifier = modifier) {
         val w = size.width
         val h = size.height
         val tile = max(1f, min(w, h) / 18f)
@@ -83,10 +80,15 @@ fun ImbaSwirlLogo(modifier: Modifier = Modifier) {
                 size = Size(ts, ts)
             )
         }
-        // Keep only the tiles under the letters.
+        // Hide everything outside the letters: ink everywhere except the letter shapes (even-odd cut-out).
         val k = h / VB_H
+        val cutout = androidx.compose.ui.graphics.Path().apply {
+            fillType = androidx.compose.ui.graphics.PathFillType.EvenOdd
+            addRect(androidx.compose.ui.geometry.Rect(VB_X - 40f, VB_Y - 40f, VB_X + VB_W + 40f, VB_Y + VB_H + 40f))
+            paths.forEach { addPath(it) }
+        }
         scale(k, k, pivot = Offset.Zero) {
-            translate(-VB_X, -VB_Y) { paths.forEach { drawPath(it, Color.White, blendMode = BlendMode.DstIn) } }
+            translate(-VB_X, -VB_Y) { drawPath(cutout, ImbaInk) }
         }
     }
 }

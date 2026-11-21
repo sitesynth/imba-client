@@ -5,7 +5,8 @@
         the app icon no longer sits on the platform's grey backdrop.
     -->
     <style name="Theme.YPtun" parent="@android:style/Theme.Material.NoActionBar">
-        <item name="android:windowBackground">@android:color/black</item>
-        <item name="android:windowSplashScreenBackground">@android:color/black</item>
+        <item name="android:windowBackground">#111111</item>
+        <item name="android:windowSplashScreenBackground">#111111</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_empty</item>
     </style>
 </resources>

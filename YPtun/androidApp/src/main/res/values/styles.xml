@@ -7,6 +7,6 @@
         the in-app background.
     -->
     <style name="Theme.YPtun" parent="@android:style/Theme.Material.NoActionBar">
-        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:windowBackground">#111111</item>
     </style>
 </resources>

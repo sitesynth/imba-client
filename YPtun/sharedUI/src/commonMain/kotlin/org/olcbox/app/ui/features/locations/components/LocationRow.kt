@@ -387,20 +387,20 @@ private fun WhitelistBypassBadge() {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
-            .size(30.dp)
+            .size(32.dp)
             .border(2.dp, ink, CircleShape)
             .drawWithContent {
-                drawContent()
                 val inset = size.width * 0.14f
                 drawLine(
                     color = ink,
                     start = androidx.compose.ui.geometry.Offset(inset, size.height - inset),
                     end = androidx.compose.ui.geometry.Offset(size.width - inset, inset),
-                    strokeWidth = 2.dp.toPx()
+                    strokeWidth = 1.5.dp.toPx()
                 )
+                drawContent()
             }
     ) {
-        Text(text = "БС", fontSize = 10.sp, fontWeight = FontWeight.ExtraBold, color = ink, maxLines = 1)
+        Text(text = "БС", fontSize = 11.sp, fontWeight = FontWeight.ExtraBold, color = ink, maxLines = 1)
     }
 }
 
