@@ -21,11 +21,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 // Paths of public/imba-black.svg on the site (viewBox -4.3 147.8 1419.1 470.8).
-private const val VB_X = -4.3f
-private const val VB_Y = 147.8f
-private const val VB_W = 1419.1f
-private const val VB_H = 470.8f
-private val WORDMARK_PATHS = listOf(
+internal const val VB_X = -4.3f
+internal const val VB_Y = 147.8f
+internal const val VB_W = 1419.1f
+internal const val VB_H = 470.8f
+internal val WORDMARK_PATHS = listOf(
     "M-2.3,147.8H233.1V618.6H-2.3Z",
     "M485.5,353.2c-2.6,28.2-30.1,27.9-32.4-.3l-18.9-203.3-168.5-1.5v470.4h113.7l1.9-263.8c.2-28.2,28-31,30.7-3l25.8,266.9h61.8l25.8-266.6c2.7-27.9,30.5-25.2,30.7,3l1.9,263.6h132.2V148.1l-185,1.5-19.5,203.6h-.2Z",
     "M1011.7,148.3h-289.2v469.9h289.2c22.4,0,40.6-27.6,40.6-61.6v-96.1c0-34-18.2-61.6-40.6-61.6h-53.5c-8.7-1.5-15.4-12.8-15.4-26.3s7.3-25.7,16.5-26.4h52.4c22.4,0,40.6-27.6,40.6-61.6v-74.4c0-34-18.2-61.6-40.6-61.6h0ZM901.3,509.8c0,14-7.5,25.4-16.7,25.4h-15.3c-9.2,0-16.7-11.4-16.7-25.4v-65.6c0-20.5,10.9-37,24.4-37s24.4,16.6,24.4,37v65.6h-.1ZM901.3,329.3c0,14-7.5,25.4-16.7,25.4h-15.3c-9.2,0-16.7-11.4-16.7-25.4v-60c0-20.5,10.9-37,24.4-37s24.4,16.6,24.4,37v60h-.1Z",

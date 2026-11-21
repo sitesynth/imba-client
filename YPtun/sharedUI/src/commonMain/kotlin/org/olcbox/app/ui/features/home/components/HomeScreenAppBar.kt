@@ -8,7 +8,10 @@ import androidx.compose.material.icons.outlined.CreateNewFolder
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.History
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.PowerSettingsNew
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Shield
 import androidx.compose.material.icons.rounded.MoreVert
@@ -49,9 +52,39 @@ fun HomeScreenAppBar(
     onListViewClick: (() -> Unit)? = null,
     onCreateGroupClick: (() -> Unit)? = null,
     // Desktop only: a way out of the app from the main window (the tray menu can be unavailable).
-    onExitClick: (() -> Unit)? = null
+    onExitClick: (() -> Unit)? = null,
+    // Messages from the panel (subscription `announce` header): (subscription name, text). Shown behind the bell.
+    messages: List<Pair<String, String>> = emptyList()
 ) {
     var overflowExpanded by remember { mutableStateOf(false) }
+    var bellOpen by remember { mutableStateOf(false) }
+    var seenKey by remember { mutableStateOf<String?>(null) }
+    val messagesKey = messages.joinToString("|") { it.second }
+    if (bellOpen) {
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = { bellOpen = false },
+            confirmButton = {
+                androidx.compose.material3.TextButton(onClick = { bellOpen = false }) { Text("OK") }
+            },
+            title = { Text("Сообщения") },
+            text = {
+                Column(
+                    verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.verticalScroll(rememberScrollState())
+                ) {
+                    if (messages.isEmpty()) {
+                        Text("Пока нет сообщений", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    messages.forEach { (from, text) ->
+                        Column {
+                            Text(from, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(org.olcbox.app.ui.features.locations.components.rememberLinkified(text), style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
+                }
+            }
+        )
+    }
     CenterAlignedTopAppBar(
         title = {
             org.olcbox.app.ui.theme.ImbaLogo(markHeight = 14.dp)
@@ -81,6 +114,21 @@ fun HomeScreenAppBar(
                     Icon(
                         imageVector = Icons.Outlined.Shield,
                         contentDescription = "Split tunneling",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
+            IconButton(onClick = { bellOpen = true; seenKey = messagesKey }) {
+                androidx.compose.material3.BadgedBox(
+                    badge = {
+                        if (messages.isNotEmpty() && seenKey != messagesKey) {
+                            androidx.compose.material3.Badge(containerColor = androidx.compose.ui.graphics.Color(0xFFFF7A3D))
+                        }
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Notifications,
+                        contentDescription = "Сообщения",
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }

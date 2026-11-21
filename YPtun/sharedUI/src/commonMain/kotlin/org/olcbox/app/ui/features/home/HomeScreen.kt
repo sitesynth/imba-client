@@ -468,7 +468,15 @@ fun HomeScreen(
                     { isListViewSheetOpen = true }
                 } else null,
                 onCreateGroupClick = { folderDialog = FolderDialog.Create(emptyList()) },
-                onExitClick = onExitClick
+                onExitClick = onExitClick,
+                messages = locations
+                    .mapNotNull { l ->
+                        val sub = l.metadata?.subscription ?: return@mapNotNull null
+                        val text = sub.announce?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+                        val from = (sub.customName?.takeIf { it.isNotBlank() } ?: sub.name?.takeIf { it.isNotBlank() }) ?: "IMBA"
+                        from to text
+                    }
+                    .distinctBy { it.second }
             )
         },
         bottomBar = {

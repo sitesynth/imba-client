@@ -83,6 +83,7 @@ fun OlcboxAppContent(
     onShareSubscriptionRequested: ((url: String) -> Unit)? = null
 ) {
     val homeScrollState = rememberLazyListState()
+    androidx.compose.foundation.layout.Box {
 
     // A crossfade only looks like a crossfade if BOTH halves are on screen at the same time and
     // something opaque is behind them. The old spec faded the outgoing screen out over 160 ms while
@@ -297,5 +298,7 @@ fun OlcboxAppContent(
                     }
             }
         }
+    }
+    org.olcbox.app.ui.theme.ImbaSplashOverlay()
     }
 }
