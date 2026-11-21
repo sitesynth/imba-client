@@ -34,6 +34,7 @@ import kotlin.concurrent.thread
 class CabinetActivity : Activity() {
     private lateinit var web: WebView
     private lateinit var progressBar: ProgressBar
+    private lateinit var loadingLabel: TextView
     private val prefs by lazy { getSharedPreferences("imba_cabinet", Context.MODE_PRIVATE) }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -72,6 +73,8 @@ class CabinetActivity : Activity() {
         web = WebView(this).apply {
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
+            // Lets the site recognise the app (e.g. hide Google sign-in, which Google blocks in embedded WebViews).
+            settings.userAgentString = settings.userAgentString + " IMBAApp/1"
             setBackgroundColor(Color.WHITE)
             CookieManager.getInstance().setAcceptCookie(true)
             webViewClient = object : WebViewClient() {
@@ -80,6 +83,7 @@ class CabinetActivity : Activity() {
 
                 override fun onPageFinished(view: WebView, url: String) {
                     progressBar.visibility = View.GONE
+                    loadingLabel.visibility = View.GONE
                     syncAccount()
                 }
 
@@ -95,6 +99,13 @@ class CabinetActivity : Activity() {
         column.addView(progressBar, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (3 * dp).toInt()))
         column.addView(web, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
         root.addView(column)
+        loadingLabel = TextView(this).apply {
+            text = "Загрузка…"
+            textSize = 16f
+            setTextColor(ink)
+            gravity = Gravity.CENTER
+        }
+        root.addView(loadingLabel, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
         setContentView(root)
 
         val start = intent?.getStringExtra(EXTRA_PATH)?.takeIf { it.startsWith("/") } ?: "/dashboard"
