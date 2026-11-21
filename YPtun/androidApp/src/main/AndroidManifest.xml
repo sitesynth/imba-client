@@ -116,6 +116,11 @@
         <!-- Launcher icons. MainActivity itself has NO launcher entry: exactly one of these aliases is
              enabled at a time (AppIcons.kt flips them from Settings → Оформление). The default alias keeps
              the old name .AppActivity so launcher shortcuts pinned before the switch keep resolving. -->
+        <activity
+            android:name=".CabinetActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar" />
         <activity-alias
             android:name=".AppActivity"
             android:targetActivity=".MainActivity"

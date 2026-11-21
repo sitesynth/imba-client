@@ -36,6 +36,7 @@ import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.LightMode
 import org.olcbox.app.ui.components.SupportProjectSection
 import androidx.compose.material.icons.outlined.Bolt
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.AltRoute
 import androidx.compose.material.icons.outlined.Dns
 import androidx.compose.material.icons.outlined.Language
@@ -845,6 +846,23 @@ private fun AppSettingsHubContent(
         if (searchQuery.isNotBlank()) {
             SettingsSearchResults(SettingsSearch.search(searchEntries, searchQuery), onSearchPick)
         } else {
+        SettingsCaption("Личный кабинет")
+        SettingsCard {
+            SettingsCardRow(
+                title = "Кабинет IMBA",
+                subtitle = "Вход, баланс, трафик, оплата, поддержка",
+                icon = Icons.Outlined.AccountCircle,
+                enabled = true,
+                onClick = {
+                    // CabinetActivity lives in the app module, so it is started by class name.
+                    runCatching {
+                        context.startActivity(
+                            android.content.Intent().setClassName(context.packageName, "org.olcbox.app.CabinetActivity")
+                        )
+                    }
+                }
+            )
+        }
         SettingsCaption(s.settingsSectionConnection)
         SettingsCard {
             SettingsCardRow(
