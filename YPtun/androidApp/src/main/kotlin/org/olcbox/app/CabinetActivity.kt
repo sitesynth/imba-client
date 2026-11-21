@@ -33,7 +33,7 @@ import kotlin.concurrent.thread
  */
 class CabinetActivity : Activity() {
     private lateinit var web: WebView
-    private lateinit var progress: ProgressBar
+    private lateinit var progressBar: ProgressBar
     private val prefs by lazy { getSharedPreferences("imba_cabinet", Context.MODE_PRIVATE) }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -65,7 +65,7 @@ class CabinetActivity : Activity() {
         bar.addView(close)
         bar.addView(title)
 
-        progress = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {
+        progressBar = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {
             max = 100
             visibility = View.GONE
         }
@@ -79,12 +79,12 @@ class CabinetActivity : Activity() {
                     route(request.url)
 
                 override fun onPageFinished(view: WebView, url: String) {
-                    progress.visibility = View.GONE
+                    progressBar.visibility = View.GONE
                     syncAccount()
                 }
 
                 override fun onPageStarted(view: WebView, url: String, favicon: android.graphics.Bitmap?) {
-                    progress.visibility = View.VISIBLE
+                    progressBar.visibility = View.VISIBLE
                 }
             }
         }
@@ -92,7 +92,7 @@ class CabinetActivity : Activity() {
         val root = FrameLayout(this)
         val column = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         column.addView(bar, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        column.addView(progress, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (3 * dp).toInt()))
+        column.addView(progressBar, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (3 * dp).toInt()))
         column.addView(web, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
         root.addView(column)
         setContentView(root)
