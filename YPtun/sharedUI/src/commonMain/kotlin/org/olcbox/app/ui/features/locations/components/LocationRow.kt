@@ -14,6 +14,7 @@ import org.olcbox.app.ui.theme.imbaHardShadow
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -173,7 +174,9 @@ fun LocationRow(
         ?: metadata?.subscription?.icon?.takeIf { it.isNotBlank() }
         ?: ""
     val (emoji, parsedName) = parseEmojiAndName(rawName, fallbackIcon)
+    // The transport is shown as the "БС" badge, not as a "(WDTT)" tag in the name.
     val cleanName = parsedName.ifBlank { location.config?.displayName().orEmpty() }
+        .replace(Regex("\\s*\\((WDTT|VK-TURN)\\)\\s*$", RegexOption.IGNORE_CASE), "")
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -230,9 +233,10 @@ fun LocationRow(
 
             // Protocol/IP "endpoint" subtitle — hidden when this location has a description and the
             // "hide endpoint when description" setting is on (default), so the description stands in for it.
-            if (description == null || !LocalHideEndpointWhenDescription.current) {
+            val subtitle = locationSubtitle(location)
+            if (subtitle.isNotBlank() && (description == null || !LocalHideEndpointWhenDescription.current)) {
                 Text(
-                    text = locationSubtitle(location),
+                    text = subtitle,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp,
                     maxLines = 2,
@@ -304,7 +308,9 @@ fun LocationRow(
                 }
             }
 
-            isVkTurn || isMasterDns -> {
+            isVkTurn -> WhitelistBypassBadge()
+
+            isMasterDns -> {
                 Text(
                     text = "?",
                     fontSize = 14.sp,
@@ -374,6 +380,30 @@ fun LocationRow(
     }
 }
 
+/** "БС" in a ring with a diagonal slash: this server works while white lists (whitelist-only internet) are on. */
+@Composable
+private fun WhitelistBypassBadge() {
+    val ink = MaterialTheme.colorScheme.onSurface
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .size(30.dp)
+            .border(2.dp, ink, CircleShape)
+            .drawWithContent {
+                drawContent()
+                val inset = size.width * 0.14f
+                drawLine(
+                    color = ink,
+                    start = androidx.compose.ui.geometry.Offset(inset, size.height - inset),
+                    end = androidx.compose.ui.geometry.Offset(size.width - inset, inset),
+                    strokeWidth = 2.dp.toPx()
+                )
+            }
+    ) {
+        Text(text = "БС", fontSize = 10.sp, fontWeight = FontWeight.ExtraBold, color = ink, maxLines = 1)
+    }
+}
+
 private fun locationSubtitle(location: LocationItem): String {
     val config = location.config
     val metadata = location.metadata
@@ -391,7 +421,6 @@ private fun locationSubtitle(location: LocationItem): String {
         )
 
         EngineType.VkTurn -> listOfNotNull(
-            "VK-TURN",
             config.proxy?.displayServer
         )
 

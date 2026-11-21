@@ -54,11 +54,7 @@ fun HomeScreenAppBar(
     var overflowExpanded by remember { mutableStateOf(false) }
     CenterAlignedTopAppBar(
         title = {
-            Text(
-                text = "IMBA",
-                style = MaterialTheme.typography.titleLarge.copy(fontFamily = org.olcbox.app.ui.theme.imbaWordmarkFamily(), letterSpacing = 1.sp),
-                color = MaterialTheme.colorScheme.onSurface
-            )
+            org.olcbox.app.ui.theme.ImbaLogo(markHeight = 14.dp)
         },
         navigationIcon = {
             if (showAppSettingsButton) {
