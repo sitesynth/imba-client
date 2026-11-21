@@ -29,8 +29,7 @@ import kotlin.concurrent.thread
  *
  *  - Sign-in is the site's login form. After it, the `imba_token` cookie is read and the account's
  *    subscription link is fetched from the API and imported through the existing `yptun://import/` link.
- *  - Top-up pages open in the system browser (Chrome) through a one-time sign-in link: Google Pay and saved
- *    cards do not work inside a WebView.
+ *  - Everything stays inside the app, including payment pages.
  */
 class CabinetActivity : Activity() {
     private lateinit var web: WebView
@@ -112,44 +111,11 @@ class CabinetActivity : Activity() {
         if (web.canGoBack()) web.goBack() else super.onBackPressed()
     }
 
-    /** true = handled outside the WebView. */
+    /** true = handled outside the WebView. Web pages (including payment pages) stay in the app. */
     private fun route(uri: Uri): Boolean {
-        val host = uri.host.orEmpty()
-        val onSite = host == "imba.live" || host.endsWith(".imba.live")
-        if (!onSite) {
-            // Payment providers, Telegram, mailto: real apps/Chrome do these properly (Google Pay works there).
-            return runCatching { startActivity(Intent(Intent.ACTION_VIEW, uri)); true }.getOrDefault(false)
-        }
-        val path = uri.path.orEmpty()
-        if (path.startsWith("/dashboard/billing/topup") && !path.endsWith("/result")) {
-            openInBrowserSignedIn(path)
-            return true
-        }
-        return false
-    }
-
-    /** Asks the API for a one-time sign-in link and opens it in Chrome; falls back to the WebView. */
-    private fun openInBrowserSignedIn(path: String) {
-        val token = prefs.getString("token", null)
-        if (token == null) { web.loadUrl("$SITE$path"); return }
-        thread {
-            val url = runCatching {
-                val c = (URL("$API/v1/auth/app-handoff").openConnection() as HttpURLConnection).apply {
-                    requestMethod = "POST"
-                    connectTimeout = 10_000; readTimeout = 10_000
-                    doOutput = true
-                    setRequestProperty("Authorization", "Bearer $token")
-                    setRequestProperty("Content-Type", "application/json")
-                }
-                c.outputStream.use { it.write("""{"next":"$path"}""".toByteArray()) }
-                if (c.responseCode != 200) null
-                else org.json.JSONObject(c.inputStream.bufferedReader().readText()).optString("url").takeIf { it.isNotBlank() }
-            }.getOrNull()
-            runOnUiThread {
-                if (url != null) startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-                else web.loadUrl("$SITE$path")
-            }
-        }
+        if (uri.scheme == "http" || uri.scheme == "https") return false
+        // tg://, mailto:, tel: ... belong to the apps that handle them.
+        return runCatching { startActivity(Intent(Intent.ACTION_VIEW, uri)); true }.getOrDefault(true)
     }
 
     /** After sign-in: remember the token and add the account's subscription to the app, once per link. */
