@@ -278,6 +278,7 @@ kotlin {
 
             implementation(compose.materialIconsExtended)
             implementation(libs.kermit)
+            implementation(libs.compottie)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)

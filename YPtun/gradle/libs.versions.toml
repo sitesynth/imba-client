@@ -9,6 +9,7 @@ androidx-activityCompose = "1.13.0"
 androidx-core = "1.16.0"
 androidx-camera = "1.6.1"
 kermit = "2.1.0"
+compottie = "2.3.3"
 kotlinx-coroutines = "1.11.0"
 kotlinx-datetime = "0.7.1"
 ktor = "3.5.0"
@@ -40,6 +41,7 @@ androidx-camera-core = { module = "androidx.camera:camera-core", version.ref = "
 androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "androidx-camera" }
 androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "androidx-camera" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "compottie" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }

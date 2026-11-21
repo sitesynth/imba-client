@@ -4,6 +4,15 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
+import io.github.alexzhirkevich.compottie.Compottie
+import io.github.alexzhirkevich.compottie.LottieCompositionSpec
+import io.github.alexzhirkevich.compottie.rememberLottieComposition
+import io.github.alexzhirkevich.compottie.rememberLottiePainter
+import multiplatform_app.sharedui.generated.resources.Res
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
@@ -89,20 +98,37 @@ private fun DrawScope.clearOutsideLetters(cutout: Path) {
     }
 }
 
-private fun DrawScope.drawBand(x0: Float, band: BeamBand, dp: Float, height: Float) {
-    val half = (band.spread + band.blur / 2f) * dp
-    val width = half * 2f
-    val left = x0 + band.dx * dp - half
-    val edge = (band.blur / 2f * dp) / width
-    val brush = Brush.horizontalGradient(
-        0f to band.color.copy(alpha = 0f),
-        edge to band.color,
-        1f - edge to band.color,
-        1f to band.color.copy(alpha = 0f),
-        startX = left,
-        endX = left + width
-    )
-    drawRect(brush, topLeft = Offset(left, 0f), size = Size(width, height * 2f))
+/** erf (Abramowitz-Stegun 7.1.26): the Gaussian blur profile of a CSS box-shadow needs it. */
+private fun erf(x: Float): Float {
+    val a = kotlin.math.abs(x)
+    val t = 1f / (1f + 0.3275911f * a)
+    val y = 1f - (((((1.061405429f * t - 1.453152027f) * t) + 1.421413741f) * t - 0.284496736f) * t + 0.254829592f) *
+        t * kotlin.math.exp(-a * a)
+    return if (x < 0) -y else y
+}
+
+private val brushCache = HashMap<Triple<Int, ULong, Float>, Brush>()
+
+/**
+ * A box-shadow of a zero-width element: a vertical band `2 * spread` wide, blurred by a Gaussian with
+ * sigma = blur / 2, so its colour fades softly (that softness is what makes the logo pastel).
+ */
+private fun DrawScope.drawBand(x0: Float, band: BeamBand, shape: Int, dp: Float, height: Float) {
+    val half = (band.spread + band.blur) * dp
+    val brush = brushCache.getOrPut(Triple(shape, band.color.value, dp)) {
+        val sigma = band.blur / 2f * dp
+        val spread = band.spread * dp
+        val n = 16
+        val stops = Array(n + 1) { k ->
+            val x = -half + 2f * half * k / n
+            val alpha = 0.5f * (erf((x + spread) / (sigma * 1.4142135f)) - erf((x - spread) / (sigma * 1.4142135f)))
+            (k.toFloat() / n) to band.color.copy(alpha = alpha.coerceIn(0f, 1f))
+        }
+        Brush.horizontalGradient(*stops, startX = 0f, endX = 2f * half)
+    }
+    translate(x0 + band.dx * dp - half, 0f) {
+        drawRect(brush, topLeft = Offset.Zero, size = Size(2f * half, height * 2f))
+    }
 }
 
 /** RainbowImbaLogo: white ground, 25 tilted beams (yellow / purple / blue / green / white glow) sliding across. */
@@ -126,7 +152,7 @@ private fun DrawScope.drawRainbow(t: Float) {
             BeamBand(-50f, 50f, 25f, c[0]),
             BeamBand(-130f, 80f, 40f, BeamYellow),
         )
-        rotate(10f, pivot = Offset(x0, 0f)) { bands.forEach { drawBand(x0, it, dp, h) } }
+        rotate(10f, pivot = Offset(x0, 0f)) { bands.forEachIndexed { k, band -> drawBand(x0, band, k, dp, h) } }
     }
 }
 
@@ -221,7 +247,29 @@ fun ImbaSplashOverlay(durationMs: Long = 2200) {
                 }
                 .pointerInput(Unit) { detectTapGestures(onTap = { visible = false }) }
         ) {
-            ImbaSwirlLogo(Modifier.fillMaxWidth(0.74f).aspectRatio(VB_W / VB_H))
+            BoxWithConstraints(Modifier.fillMaxWidth(0.74f).aspectRatio(VB_W / VB_H)) {
+                val w = maxWidth
+                val sticker = w * 0.34f
+                ImbaSwirlLogo(Modifier.fillMaxSize())
+                // The site's Lottie stickers around the word: keys, plane, cards, lock.
+                LottieSticker("keys", Modifier.align(Alignment.TopStart).offset(-w * 0.10f, -w * 0.20f).size(sticker))
+                LottieSticker("plane", Modifier.align(Alignment.TopEnd).offset(w * 0.08f, -w * 0.20f).size(sticker))
+                LottieSticker("cards", Modifier.align(Alignment.BottomStart).offset(-w * 0.12f, w * 0.14f).size(sticker))
+                LottieSticker("lock", Modifier.align(Alignment.BottomEnd).offset(w * 0.08f, w * 0.14f).size(sticker))
+            }
         }
     }
+}
+
+/** One of the site's Lottie stickers (composeResources/files/lottie/<name>.json), looping. */
+@Composable
+private fun LottieSticker(name: String, modifier: Modifier = Modifier) {
+    val composition by rememberLottieComposition(name) {
+        LottieCompositionSpec.JsonString(Res.readBytes("files/lottie/$name.json").decodeToString())
+    }
+    Image(
+        painter = rememberLottiePainter(composition = composition, iterations = Compottie.IterateForever),
+        contentDescription = null,
+        modifier = modifier
+    )
 }
