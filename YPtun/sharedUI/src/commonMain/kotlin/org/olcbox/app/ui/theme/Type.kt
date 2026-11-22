@@ -15,6 +15,10 @@ import multiplatform_app.sharedui.generated.resources.imba_unbounded_bold
 import org.jetbrains.compose.resources.Font
 
 /** IMBA cabinet type: Manrope for text, Unbounded for display headings, Archivo Black for the wordmark. */
+/** Unbounded Black, the site's display face (the launch marquee, big headings). */
+@Composable
+fun imbaDisplayFamily(): FontFamily = FontFamily(Font(Res.font.imba_unbounded_black, weight = FontWeight.Black))
+
 @Composable
 fun imbaWordmarkFamily(): FontFamily = FontFamily(Font(Res.font.imba_archivoblack_regular, weight = FontWeight.Normal))
 

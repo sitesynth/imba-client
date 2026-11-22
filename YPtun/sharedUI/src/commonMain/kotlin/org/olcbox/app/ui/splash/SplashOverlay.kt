@@ -49,6 +49,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import org.olcbox.app.ui.theme.imbaDisplayFamily
 
 private val SplashGround = Color(0xFF2E7DF6)        // the system splash colour, so the hand-over has no flash
 private const val LOGO_ONLY_END_FRAME = 160f         // returning users: ~2.7 s of the logo, no sign-in morph
@@ -160,6 +161,7 @@ private fun SplashMarquee(m: SplashMarqueeConfig, modifier: Modifier = Modifier)
     val bg = colorOf(m.background, Color(0xFFE2CCFF))
     val fg = colorOf(m.text, Color(0xFF111111))
     val sep = colorOf(m.separatorColor, Color(0xFF7E6FB0))
+    val family = imbaDisplayFamily()
     val speedPxPerS = with(LocalDensity.current) { m.speedDpPerS.coerceIn(10f, 400f).dp.toPx() }
     var unitPx by remember { mutableIntStateOf(0) }
     val shift = remember { Animatable(0f) }
@@ -184,11 +186,11 @@ private fun SplashMarquee(m: SplashMarqueeConfig, modifier: Modifier = Modifier)
                 Row(if (copy == 0) Modifier.onSizeChanged { unitPx = it.width } else Modifier) {
                     m.items.forEach { item ->
                         Text(
-                            item, color = fg, fontSize = 14.sp, fontWeight = FontWeight.Black, maxLines = 1,
+                            item, color = fg, fontFamily = family, fontSize = 14.sp, fontWeight = FontWeight.Black, maxLines = 1,
                             softWrap = false, letterSpacing = (-0.14).sp, modifier = Modifier.padding(horizontal = 12.dp)
                         )
                         Text(
-                            m.separator, color = sep, fontSize = 14.sp, fontWeight = FontWeight.Black, maxLines = 1,
+                            m.separator, color = sep, fontFamily = family, fontSize = 14.sp, fontWeight = FontWeight.Black, maxLines = 1,
                             softWrap = false, modifier = Modifier.padding(horizontal = 4.dp)
                         )
                     }
