@@ -1,5 +1,11 @@
 package org.olcbox.app.ui.theme
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -8,6 +14,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import kotlin.math.PI
+import kotlin.math.sin
+import kotlin.math.tan
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,12 +57,18 @@ fun ImbaWordmark(height: Dp, color: Color = ImbaInk, modifier: Modifier = Modifi
     }
 }
 
-/** The site's logo lockup: yellow plate, 2dp ink border, hard 3dp shadow, black wordmark. */
+/**
+ * The site's logo lockup: yellow plate, 2dp ink border, hard 3dp shadow, black wordmark.
+ * It is alive ([alive]): a constant small wiggle, now and then a jelly skew, and a pendulum sway as if the plate
+ * hung on a nail at its top centre. Same 6 s timeline as the logo in the launch splash, at [amplitude] strength.
+ */
 @Composable
-fun ImbaLogo(markHeight: Dp = 19.dp, modifier: Modifier = Modifier) {
+fun ImbaLogo(markHeight: Dp = 19.dp, modifier: Modifier = Modifier, alive: Boolean = true, amplitude: Float = 0.6f) {
     val shape = RoundedCornerShape(11.dp)
+    val frame = if (alive) rememberLogoFrame() else null
     Box(
         modifier = modifier
+            .then(if (frame != null) Modifier.logoAlive(frame, amplitude) else Modifier)
             .imbaHardShadow(shape, 3.dp)
             .clip(shape)
             .background(ImbaYellow)
@@ -58,5 +76,52 @@ fun ImbaLogo(markHeight: Dp = 19.dp, modifier: Modifier = Modifier) {
             .padding(horizontal = markHeight * 0.62f, vertical = markHeight * 0.5f)
     ) {
         ImbaWordmark(height = markHeight)
+    }
+}
+
+/** Frame 0..360 of a 6 s loop. Read inside a draw block only, so the logo redraws without recomposing. */
+@Composable
+private fun rememberLogoFrame(): State<Float> =
+    rememberInfiniteTransition(label = "imba-logo").animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(tween(6000, easing = LinearEasing), RepeatMode.Restart),
+        label = "imba-logo-frame"
+    )
+
+// (frame, degrees): the jelly skew burst and the damped pendulum, as in the splash animation (60 fps frames).
+private val LogoSkew = listOf(0f to 0f, 30f to 0f, 36f to -14f, 46f to 9f, 56f to -5f, 66f to 2f, 76f to 0f, 360f to 0f)
+private val LogoSway = listOf(0f to 0f, 170f to 0f, 185f to 9f, 205f to -7f, 225f to 5f, 245f to -3f, 265f to 1.5f, 285f to 0f, 360f to 0f)
+
+private fun keyed(frame: Float, points: List<Pair<Float, Float>>): Float {
+    if (frame <= points.first().first) return points.first().second
+    for (i in 1 until points.size) {
+        val (f1, v1) = points[i]
+        if (frame <= f1) {
+            val (f0, v0) = points[i - 1]
+            val t = (frame - f0) / (f1 - f0)
+            return v0 + (v1 - v0) * (t * t * (3f - 2f * t))     // smoothstep between keys
+        }
+    }
+    return points.last().second
+}
+
+private fun Modifier.logoAlive(frame: State<Float>, amplitude: Float): Modifier = drawWithContent {
+    val f = frame.value
+    val wiggle = 0.9f * sin(2.0 * PI * f / 120.0).toFloat()
+    val breathe = 1f + 0.012f * amplitude * sin(2.0 * PI * f / 90.0 + 1.0).toFloat()
+    val sway = keyed(f, LogoSway)
+    val skew = keyed(f, LogoSkew)
+    drawIntoCanvas { canvas ->
+        canvas.save()
+        canvas.translate(size.width / 2f, 0f)                      // the nail: top centre
+        canvas.rotate((sway + wiggle) * amplitude)
+        canvas.translate(-size.width / 2f, 0f)
+        canvas.translate(size.width / 2f, size.height / 2f)        // breathing and jelly skew around the centre
+        canvas.scale(breathe, breathe)
+        canvas.skew(tan(skew * amplitude * PI / 180.0).toFloat(), 0f)
+        canvas.translate(-size.width / 2f, -size.height / 2f)
+        this@drawWithContent.drawContent()
+        canvas.restore()
     }
 }
